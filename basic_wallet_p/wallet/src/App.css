@@ -1,38 +1,61 @@
 .App {
-  text-align: center;
+  padding: 0 30px 0 30px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.id-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+
+.transactions {
   display: flex;
   flex-direction: column;
-  align-items: center;
+}
+
+.transaction-props {
+  font-size: 0.7rem;
+  display: flex;
+  border-bottom: 1px solid rgb(201, 201, 201);
+  width: 700px;
+}
+
+
+.t-desc {
+  min-width: 245px;
+  color: grey;
+
+}
+
+.transaction-details {
+  display: flex;
+  border-bottom: 0.4px solid rgb(201, 201, 201);
+  width: 700px;
+}
+
+.t-detail {
+  min-width: 245px;
+}
+
+
+
+.form-container {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  height: 100vh;
 }
 
-.App-link {
-  color: #61dafb;
+form {
+  padding: 100px;
+  border: 1px solid gainsboro;
+  box-shadow: 0px 0px 20px -5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#view-wallet {
+  margin-top: 30px;
 }
