@@ -2,6 +2,11 @@
   padding: 0 30px 0 30px;
 }
 
+.logo {
+  padding-bottom: 20px;
+  border-bottom: 1px solid grey;
+}
+
 .id-balance {
   display: flex;
   justify-content: space-between;
@@ -37,6 +42,7 @@
 
 .t-detail {
   min-width: 245px;
+  font-weight: bold;
 }
 
 

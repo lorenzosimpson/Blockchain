@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 function Balance(props) {
     const {userId} = props
@@ -10,13 +10,13 @@ function Balance(props) {
 
     // find blocks recieved
     for (const block of chain) {
-        block.transactions.filter(trans => trans.recipient == userId).map(t => (
+        block.transactions.filter(trans => trans.recipient === userId).map(t => (
             received.push(t.amount)
         ))
     }
     // find blocks sent
     for (const block of chain) {
-        block.transactions.filter(trans => trans.sender == userId).map(t => (
+        block.transactions.filter(trans => trans.sender === userId).map(t => (
             sent.push(t.amount)
         ))
     }

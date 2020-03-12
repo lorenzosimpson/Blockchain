@@ -8,7 +8,7 @@ import {Route} from 'react-router-dom';
 
 function App() {
   const [chain, setChain] = useState([])
-  const [userId, setUserId] = useState('alec');
+  const [userId, setUserId] = useState('');
 
 
   useEffect(() => {
@@ -23,7 +23,7 @@ function App() {
 
   return (
     <div className="App">
-      <h3>coinChecker</h3>
+      <h3 className='logo'>coinChecker</h3>
       <Route exact path='/' render={props => <Form {...props} setUserId={setUserId} />}/>
       <Route exact path='/dashboard' 
       render={() => (
@@ -31,9 +31,8 @@ function App() {
           <h1>Wallet</h1>
           <section className='id-balance'>
             <p>Logged in as: {userId}</p>
-            <h4>Balance: <Balance chain={chain} userId={userId} /></h4>
+            <h3>Balance: <Balance chain={chain} userId={userId} /></h3>
           </section>
-          
 
           <Transactions 
             chain={chain}

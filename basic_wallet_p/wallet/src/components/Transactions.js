@@ -6,13 +6,13 @@ function Transactions(props) {
     const sent = []
 
     for (const block of chain) {
-        block.transactions.filter(trans => trans.recipient == userId).map(t => (
+        block.transactions.filter(trans => trans.recipient === userId).map(t => (
            received.push(t)
         ))
     }
     // find blocks sent
     for (const block of chain) {
-        block.transactions.filter(trans => trans.sender == userId).map(t => (
+        block.transactions.filter(trans => trans.sender === userId).map(t => (
             sent.push(t)
         ))
     }
