@@ -1,24 +1,32 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import logo from './logo.svg';
 import './App.css';
+import Transactions from './components/Transactions';
 
 function App() {
+  const [chain, setChain] = useState([])
+  const [userId, setUserId] = useState('alec');
+
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/chain')
+    .then(res => {
+      console.log(res.data)
+      setChain(res.data.chain)
+    })
+    .catch(err => {
+      console.log(err)
+    })
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Welcome, {userId}</h1>
+      <p>Balance: </p>
+      <Transactions 
+      chain={chain}
+      userId={userId} />
     </div>
   );
 }
