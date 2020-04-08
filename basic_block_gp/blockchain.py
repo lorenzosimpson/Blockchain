@@ -43,7 +43,8 @@ class Blockchain(object):
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
-            'previous_hash': previous_hash or self.hash(self.last_block)
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'hash': current_hash
         }
 
         # Reset the current list of transactions
@@ -136,7 +137,7 @@ def mine():
     proof = blockchain.proof_of_work()
     previous_hash = blockchain.hash(blockchain.last_block)
     # Forge the new Block by adding it to the chain with the proof
-    new_block = blockchain.new_block(previous_hash, proof)
+    new_block = blockchain.new_block(proof, previous_hash)
     response = {
         'block': new_block
     }
