@@ -1,16 +1,25 @@
-.App {
-  padding: 0 30px 0 30px;
+body {
+  background: rgb(48, 48, 48);
+  color: white;
+}
+
+
+.content {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 700px;
 }
 
 .logo {
-  padding-bottom: 20px;
-  border-bottom: 1px solid grey;
+  border-bottom: 1px solid rgb(206, 206, 206);
+  padding: 0 30px 20px 30px;
 }
 
 .id-balance {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 700px;
 }
 
 

@@ -32,7 +32,7 @@ function Transactions(props) {
                     <div className='transaction-details'>
                     <p className='t-detail'>{trans.sender}</p>
                     <p className='t-detail'>{trans.amount}</p>
-                    <p className='t-detail'>{trans.date}</p>
+                    <p className='t-detail'>{trans.timestamp}</p>
                     </div>
                     
                 ))}
@@ -49,7 +49,7 @@ function Transactions(props) {
                     <div className='transaction-details'>
                     <p className='t-detail'>{trans.recipient}</p>
                     <p className='t-detail'>{trans.amount}</p>
-                    <p className='t-detail'>{trans.date}</p>
+                    <p className='t-detail'>{trans.timestamp}</p>
                     </div>
                 ))}
             </div>

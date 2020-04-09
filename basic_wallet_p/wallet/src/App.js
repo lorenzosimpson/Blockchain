@@ -27,7 +27,7 @@ function App() {
       <Route exact path='/' render={props => <Form {...props} setUserId={setUserId} />}/>
       <Route exact path='/dashboard' 
       render={() => (
-          <>
+          <div className='content'>
           <h1>Wallet</h1>
           <section className='id-balance'>
             <p>Logged in as: {userId}</p>
@@ -38,7 +38,7 @@ function App() {
             chain={chain}
             userId={userId} 
             />
-        </>
+        </div>
       )}
       />
     </div>

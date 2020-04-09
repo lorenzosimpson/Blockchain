@@ -6,6 +6,7 @@ from time import time
 from uuid import uuid4
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 
 class Blockchain(object):
@@ -104,6 +105,7 @@ class Blockchain(object):
 
 # Instantiate our Node
 app = Flask(__name__)
+CORS(app)
 
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
@@ -160,7 +162,6 @@ def last_block():
     'last_block': blockchain.last_block
     }
     return jsonify(response), 200
-
 
 # Run the program on port 5000
 if __name__ == '__main__':
