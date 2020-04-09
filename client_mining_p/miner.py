@@ -12,8 +12,11 @@ def proof_of_work(block):
         in an effort to find a number that is a valid proof
         :return: A valid proof for the provided block
         """
-        # TODO
-        string_block = json.dumps(block, sort_keys=True)
+        proof = 0
+        block_string = json.dumps(block, sort_keys=True)
+        while valid_proof(block_string, proof) is False:
+            proof += 1
+        return proof
 
 
         proof = 0
@@ -22,20 +25,20 @@ def proof_of_work(block):
         return proof
 
 def valid_proof(block_string, proof):
-        """
-        Validates the Proof:  Does hash(block_string, proof) contain 6
-        leading zeroes?  Return true if the proof is valid
-        :param block_string: <string> The stringified block to use to
-        check in combination with `proof`
-        :param proof: <int?> The value that when combined with the
-        stringified previous block results in a hash that has the
-        correct number of leading zeroes.
-        :return: True if the resulting hash is a valid proof, False otherwise
-        """
-        guess = f'{block_string}{proof}'.encode()
-        guess_hash = hashlib.sha256(guess).hexdigest()
+    """
+    Validates the Proof:  Does hash(block_string, proof) contain 3
+    leading zeroes?  Return true if the proof is valid
+    :param block_string: <string> The stringified block to use to
+    check in combination with `proof`
+    :param proof: <int?> The value that when combined with the
+    stringified previous block results in a hash that has the
+    correct number of leading zeroes.
+    :return: True if the resulting hash is a valid proof, False otherwise
+    """
+    guess = f"{block_string}{proof}".encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
 
-        return guess_hash[:6] == '000000'
+    return guess_hash[:6] == '000000'
 
 
 balance = 0
@@ -66,16 +69,16 @@ if __name__ == '__main__':
             print(r)
             break
 
-        # TODO: Get the block from `data` and use it to look for a new proof
+        # Get the block from `data` and use it to look for a new proof
         block = data['last_block']
-        print('Success...')
-        print('Starting proof...')
-        start_time = time.time()
+        print('Last block acquired. Starting proof...')
+        print('')
+        start = time.time()
         new_proof = proof_of_work(block)
-        end_time = time.time()
+        end = time.time()
+        print(f'Proof acquired in {end - start:.2f} seconds. Posting to server for validation')
 
-
-        print(f'Success, Proof acquired in {end_time - start_time} seconds, Posting to server.')
+  
         # When found, POST it to the server {"proof": new_proof, "id": id}
         post_data = {"proof": new_proof, "id": id}
 
@@ -90,11 +93,9 @@ if __name__ == '__main__':
 
         # TODO: If the server responds with a 'message' 'New Block Forged'
         # add 1 to the number of coins mined and print it.  Otherwise,
-        # print the message from the server.
-        if data['message'] == 'New Block Forged':
-            balance += 1
-            print(f"\nSuccess! You've mined 1 coin. Balance: {balance}\n")
-            time.sleep(1)
-            print(data)
+        # print the message from the server
+        if data['message'] == "New Block Forged":
+            coins += 1
+            print(f'You now have {coins} coins')
         else:
-            print(data['message'])
+            print('Error returned from server')

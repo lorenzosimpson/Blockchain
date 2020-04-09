@@ -30,20 +30,29 @@ class Blockchain(object):
         :return: <dict> New Block
         """
 
+        if len(self.chain) > 0:
+            block_string = json.dumps(self.last_block, sort_keys=True)
+            guess = f'{block_string}{proof}'.encode()
+            current_hash = hashlib.sha256(guess).hexdigest()
+        else:
+            current_hash = ""
+
+
         block = {
-            # TODO
             'index': len(self.chain) + 1,
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
-            'previous_hash': previous_hash or self.hash(self.last_block)
+            'previous_hash': previous_hash or self.hash(self.chain[-1]),
+            'hash': current_hash
         }
 
         # Reset the current list of transactions
-        self.current_transactions = []
         # Append the block to the chain
-        self.chain.append(block)
         # Return the new block
+        
+        self.current_transactions = []
+        self.chain.append(block)
         return block
 
     def hash(self, block):
@@ -61,26 +70,24 @@ class Blockchain(object):
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
 
-        # TODO: Create the block_string
-        string_block = json.dumps(block, sort_keys=True)
+        string_object = json.dumps(block, sort_keys=True)
+        block_string = string_object.encode()
+        raw_hash = hashlib.sha256(block_string)
+        hex_hash = raw_hash.hexdigest()
 
-        # TODO: Hash this string using sha256
-        raw_hash = hashlib.sha256(string_block.encode())
         # By itself, the sha256 function returns the hash in a raw string
         # that will likely include escaped characters.
         # This can be hard to read, but .hexdigest() converts the
         # hash to a string of hexadecimal characters, which is
         # easier to work with and understand
 
-        # TODO: Return the hashed block string in hexadecimal format
-        hex_hash = raw_hash.hexdigest()
         return hex_hash
 
     @property
     def last_block(self):
         return self.chain[-1]
 
-    def proof_of_work(self, block):
+    def proof_of_work(self):
         """
         Simple Proof of Work Algorithm
         Stringify the block and look for a proof.
@@ -88,15 +95,14 @@ class Blockchain(object):
         in an effort to find a number that is a valid proof
         :return: A valid proof for the provided block
         """
-        # TODO
-        string_block = json.dumps(block, sort_keys=True)
-
 
         proof = 0
-        while self.valid_proof(string_block, proof) is False:
+        block_string = json.dumps(self.last_block, sort_keys=True)
+        while self.valid_proof(block_string, proof) is False:
             proof += 1
         return proof
-        # return proof
+        
+
 
     @staticmethod
     def valid_proof(block_string, proof): # add the strings together
@@ -110,12 +116,12 @@ class Blockchain(object):
         correct number of leading zeroes.
         :return: True if the resulting hash is a valid proof, False otherwise
         """
-        # TODO
-        guess = f'{block_string}{proof}'.encode()
+
+        guess = f"{block_string}{proof}".encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         return guess_hash[:3] == '000'
-        # return True or False
+
 
 
 # Instantiate our Node
@@ -131,13 +137,13 @@ blockchain = Blockchain()
 @app.route('/mine', methods=['GET'])
 def mine():
     # Run the proof of work algorithm to get the next proof
-    proof = blockchain.proof_of_work(blockchain.last_block)
-    # Forge the new Block by adding it to the chain with the proof
+
+    proof = blockchain.proof_of_work()
     previous_hash = blockchain.hash(blockchain.last_block)
-    block = blockchain.new_block(proof, previous_hash)
+    # Forge the new Block by adding it to the chain with the proof
+    new_block = blockchain.new_block(proof, previous_hash)
     response = {
-        # TODO: Send a JSON response with the new block
-        'new_block': block
+        'block': new_block
     }
 
     return jsonify(response), 200
