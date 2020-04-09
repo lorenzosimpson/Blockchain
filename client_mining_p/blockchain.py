@@ -6,6 +6,7 @@ from time import time
 from uuid import uuid4
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 
 class Blockchain(object):
@@ -32,29 +33,20 @@ class Blockchain(object):
         :return: <dict> New Block
         """
 
-        if len(self.chain) > 0:
-            block_string = json.dumps(self.last_block, sort_keys=True)
-            guess = f'{block_string}{proof}'.encode()
-            current_hash = hashlib.sha256(guess).hexdigest()
-        else:
-            current_hash = ""
-
-
         block = {
+            # TODO
             'index': len(self.chain) + 1,
             'timestamp': time(),
             'transactions': self.current_transactions,
             'proof': proof,
-            'previous_hash': previous_hash or self.hash(self.chain[-1]),
-            'hash': current_hash
+            'previous_hash': previous_hash or self.hash(self.last_block)
         }
 
         # Reset the current list of transactions
-        # Append the block to the chain
-        # Return the new block
-        
         self.current_transactions = []
+        # Append the block to the chain
         self.chain.append(block)
+        # Return the new block
         return block
 
     def hash(self, block):
@@ -64,7 +56,6 @@ class Blockchain(object):
         :param block": <dict> Block
         "return": <str>
         """
-
         # Use json.dumps to convert json into a string
         # Use hashlib.sha256 to create a hash
         # It requires a `bytes-like` object, which is what
@@ -73,27 +64,25 @@ class Blockchain(object):
         # We must make sure that the Dictionary is Ordered,
         # or we'll have inconsistent hashes
 
-        string_object = json.dumps(block, sort_keys=True)
-        block_string = string_object.encode()
-        raw_hash = hashlib.sha256(block_string)
-        hex_hash = raw_hash.hexdigest()
+        # TODO: Create the block_string
+        string_block = json.dumps(block, sort_keys=True)
 
+        # TODO: Hash this string using sha256
+        raw_hash = hashlib.sha256(string_block.encode())
         # By itself, the sha256 function returns the hash in a raw string
         # that will likely include escaped characters.
         # This can be hard to read, but .hexdigest() converts the
         # hash to a string of hexadecimal characters, which is
         # easier to work with and understand
 
+        # TODO: Return the hashed block string in hexadecimal format
+        hex_hash = raw_hash.hexdigest()
         return hex_hash
-
-    @property
-    def last_block(self):
-        return self.chain[-1]
 
     @staticmethod
     def valid_proof(block_string, proof):
         """
-        Validates the Proof:  Does hash(block_string, proof) contain 3
+        Validates the Proof:  Does hash(block_string, proof) contain 6
         leading zeroes?  Return true if the proof is valid
         :param block_string: <string> The stringified block to use to
         check in combination with `proof`
@@ -102,14 +91,21 @@ class Blockchain(object):
         correct number of leading zeroes.
         :return: True if the resulting hash is a valid proof, False otherwise
         """
-        guess = f"{block_string}{proof}".encode()
+        guess = f'{block_string}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
         return guess_hash[:6] == '000000'
 
 
+    @property
+    def last_block(self):
+        return self.chain[-1]
+
+
+
 # Instantiate our Node
 app = Flask(__name__)
+CORS(app)
 
 # Generate a globally unique address for this node
 node_identifier = str(uuid4()).replace('-', '')
@@ -117,31 +113,39 @@ node_identifier = str(uuid4()).replace('-', '')
 # Instantiate the Blockchain
 blockchain = Blockchain()
 
+'''
+Modify the mine endpoint to instead receive and validate or reject a new proof sent by a client.
+It should accept a POST
+Use data = request.get_json() to pull the data out of the POST
+Note that request and requests both exist in this project
+Check that 'proof', and 'id' are present
+return a 400 error using jsonify(response) with a 'message'
+Return a message indicating success or failure. Remember, a valid proof should fail for all senders except the first.
+'''
+
+
 
 @app.route('/mine', methods=['POST'])
 def mine():
     data = request.get_json()
-
-    proof = data['proof']
-    last_block_string = json.dumps(blockchain.last_block, sort_keys=True)
-    last_block = blockchain.last_block
-
-    if not data['proof'] and data['id']:
-        return jsonify({'message': 'missing id and/or proof'}), 400
-
-    if blockchain.valid_proof(last_block_string, proof):
-        previous_hash = blockchain.hash(last_block)
-        new_block = blockchain.new_block(proof, previous_hash)
-        response = {
-            'block': new_block,
-            'message': "New Block Forged"
-        }
-        return jsonify(response), 200
+    if data['proof'] and data['id']:
+        proof = data['proof']
+        id = data['id']
+        last_block_str = json.dumps(blockchain.last_block, sort_keys=True)
+        valid = blockchain.valid_proof(last_block_str, proof)
+        if valid is True:
+            previous_hash = blockchain.hash(blockchain.last_block)
+            created = blockchain.new_block(proof, previous_hash)
+            response = {
+                'message': 'New Block Forged',
+                'block': created
+            }
+            return jsonify(response), 200
     else:
         response = {
-            'message': 'Error: invalid or proof already sumbitted'
+            'message': 'Ya done goofed'
         }
-        return jsonify(response), 403
+        return jsonify(response), 400
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
@@ -155,7 +159,7 @@ def full_chain():
 @app.route('/last_block', methods=['GET'])
 def last_block():
     response = {
-        'last_block': blockchain.last_block
+    'last_block': blockchain.last_block
     }
     return jsonify(response), 200
 

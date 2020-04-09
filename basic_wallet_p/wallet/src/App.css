@@ -1,0 +1,76 @@
+body {
+  background: rgb(48, 48, 48);
+  color: white;
+}
+
+
+.content {
+  margin: 0 auto;
+  width: 80%;
+  max-width: 700px;
+}
+
+.logo {
+  border-bottom: 1px solid rgb(206, 206, 206);
+  padding: 0 30px 20px 30px;
+}
+
+.id-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 700px;
+}
+
+
+
+.transactions {
+  display: flex;
+  flex-direction: column;
+}
+
+.transaction-props {
+  font-size: 0.7rem;
+  display: flex;
+  border-bottom: 1px solid rgb(201, 201, 201);
+  width: 700px;
+}
+
+
+.t-desc {
+  min-width: 245px;
+  color: grey;
+
+}
+
+.transaction-details {
+  display: flex;
+  border-bottom: 0.4px solid rgb(201, 201, 201);
+  width: 700px;
+}
+
+.t-detail {
+  min-width: 245px;
+  font-weight: bold;
+}
+
+
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+form {
+  padding: 100px;
+  border: 1px solid gainsboro;
+  box-shadow: 0px 0px 20px -5px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+#view-wallet {
+  margin-top: 30px;
+}
